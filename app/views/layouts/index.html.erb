@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Innovationsforum Krankenhaus 4.0</title>
+    <meta charset="utf-8" />
+    <meta name="fragment" content="!">
+    <base href="/">
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/vendor.bundle.css">
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/app.bundle.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> 
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/font-awesome.min.css" />
+</head>
+<body>
+  <div class="container-fluid root_container">
+    <div ui-view="header"></div>
+    <div ui-view="body", autoscroll="true"></div>
+  </div>
+  <script type="text/javascript" src="assets/javascripts/base-min.js"></script>
+  <script type="text/javascript" src="assets/javascripts/vendor-bundle.js"></script>
+  <script type="text/javascript" src="assets/javascripts/app-bundle.js"></script>
+  <%= js_env %>
+  <script type="text/javascript">
+    window.onload = angular.bootstrap(document, ['mediMeet']);
+  </script>
+  </body>
+</html>

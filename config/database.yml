@@ -1,0 +1,23 @@
+
+
+development: &db
+  adapter: mysql2
+  encoding: utf8
+  database: db_83492517n1
+  username: 
+  password: 
+
+test:
+  <<: *db
+  
+  database: db_83492517n3
+  username: 
+  password: 
+  
+production:
+  <<: *db
+  
+  database: db_83492517n2
+  username: 
+  password: 
+
