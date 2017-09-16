@@ -1,5 +1,5 @@
 class MatchmakingWorker
-  include Sidekiq::Worker
+  include SuckerPunch::Job
   def perform(id, ownerid)
 
     intrst = Interest.find(id)
@@ -18,14 +18,6 @@ class MatchmakingWorker
     else
       find = 'offer'
     end
-
-
-    p role
-    p id
-    p target
-    p tags
-    p find
-
     #sql = 'select roles.name, users_roles.user_id from roles inner join users_roles on roles.id = users_roles.role_id'
     
     #sql = 'select users.id, users.email, roles.name as rolename from users inner join (select roles.name, users_roles.user_id from roles inner join users_roles on roles.id = users_roles.role_id) as roles on roles.user_id = users.id'

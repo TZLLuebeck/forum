@@ -45,7 +45,7 @@ module API
               requires :lastname, type: String
               optional :web, type: String
               optional :fon, type: String
-              optional :company, type: String
+              optional :company, type: Integer
             end            
           end
         end

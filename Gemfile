@@ -36,7 +36,10 @@ gem 'redis', '~> 3.0'
 gem 'bcrypt', '~> 3.1.7'
 
 #Async task manager
-gem 'sidekiq'
+#gem 'sidekiq'
+gem 'sucker_punch', '~> 2.0'
+
+
 #gem 'rerun'
 
 #File management

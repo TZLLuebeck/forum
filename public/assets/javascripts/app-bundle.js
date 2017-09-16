@@ -1,6 +1,6 @@
 var app, dependencies;
 
-dependencies = ['ui.router', 'restangular', 'ngStorage', 'permission', 'permission.ui', 'ngFileUpload'];
+dependencies = ['ui.router', 'restangular', 'ngStorage', 'permission', 'permission.ui', 'ngFileUpload', 'toaster'];
 
 app = angular.module('mediMeet', dependencies);
 
@@ -149,6 +149,9 @@ angular.module('mediMeet').config(["$stateProvider", "$urlRouterProvider", "$loc
         templateUrl: 'assets/views/common/nav.html',
         controller: 'NavCtrl',
         controllerAs: 'nav'
+      },
+      'footer@': {
+        templateUrl: 'assets/views/common/footer.html'
       }
     },
     resolve: {
@@ -541,6 +544,24 @@ angular.module('mediMeet').directive('onScrollToBottom', (function(_this) {
   }];
 })(this));
 
+angular.module('mediMeet').directive('tooltips', (function(_this) {
+  return ["$document", "$window", function($document, $window) {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        return $document.bind("scroll", (function(_this) {
+          return function() {
+            return $document.ready(function() {
+              $('[data-toggle="tooltip"]').tooltip();
+              return $('[data-toggle="popover"]').popover();
+            });
+          };
+        })(this));
+      }
+    };
+  }];
+})(this));
+
 angular.module('mediMeet').factory('Keywords', function() {
   this.categories = ["Hospital/IT 4.0", "Medizintechnik 4.0", "Facility Management 4.0", "Klinische Prozesse 4.0"];
   this.subcategories = ["Cloud/IT-Services/Big Data", "Mobile Anwendungen", "Daten-/Dokumentenaustausche", "Cyber-Security & Privacy", "Interoperabilität", "Assistenzsysteme", "Wartung und Service", "Usability", "IT-gestützte Instandhaltung", "IoT im Krankenhaus", "Blue/Green Hospital", "Supply-Chain-Management", "e-Health/Medical Apps", "Digitale Versorgungsplattform", "Qualitäts-/Leistungserfassung", "Integrierte Prozesse"];
@@ -642,7 +663,7 @@ angular.module('mediMeet').service('Company', ["mediREST", "$q", "Upload", "Rail
     var defer;
     defer = $q.defer();
     Upload.upload({
-      url: ("") + '/api/v1/companies/',
+      url: ("" + Rails.host) + '/api/v1/companies/',
       data: {
         data: company
       }
@@ -1779,7 +1800,7 @@ angular.module('mediMeet').controller('RegistrationCtrl', ["TokenContainer", "Us
           _this.form.user.contact_data = _this.form.contact_data;
         }
         return User.registerUser(_this.form.user).then(function(results) {
-          _this.submittedForm = false;
+          _this.regInProgress = false;
           console.log('Registration Data');
           console.log(results);
           User.user = results.user;
@@ -1846,13 +1867,12 @@ angular.module('mediMeet').controller('RegistrationCtrl', ["TokenContainer", "Us
           valid = false;
         }
         if (u.typus === "Firma") {
-          if (!c.company) {
+          if (!c.company_id) {
             _this.errors.company = true;
             valid = false;
           }
         }
       }
-      console.log(_this.errors);
       return valid;
     };
   })(this);
@@ -1945,9 +1965,7 @@ angular.module('mediMeet').factory('tokenInterceptor', ["TokenContainer", "Rails
   return {
     request: function(config) {
       var token;
-      console.log(config.url)
-      if (config.url.indexOf("") === 0) {
-        console.log("Adding Bearer Token")
+      if (config.url.indexOf("/api/v1/") === 0) {
         token = TokenContainer.get();
         if (token) {
           config.headers['Authorization'] = "Bearer " + token;
