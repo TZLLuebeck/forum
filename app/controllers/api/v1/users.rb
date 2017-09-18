@@ -43,9 +43,15 @@ module API
             optional :contact_data, type: Hash do
               requires :firstname, type: String
               requires :lastname, type: String
-              optional :web, type: String
-              optional :fon, type: String
-              optional :company, type: Integer
+              requires :web, type: String
+              requires :fon, type: String
+              optional :company_id, type: Integer
+            end
+            optional :company, type: Hash do
+              requires :name, type: String
+              requires :description, type: String
+              requires :typus, type: String
+              optional :logo, type: Rack::Multipart::UploadedFile
             end            
           end
         end

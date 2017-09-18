@@ -42,6 +42,13 @@ module API
             error_response(message: 'Internal server error', status: 500)
           end
         end
+        rescue_from Grape::Exceptions::ValidationErrors do |e|
+          response = {
+            status: 400,
+            error: e
+          }
+          error!(response, 400)
+        end
         rescue_from WineBouncer::Errors::OAuthUnauthorizedError do |e|
           response = {
             status: 401,

@@ -61,9 +61,14 @@ module API
 
       def get_one(params)
         c = Company.find(params[:id])
+        posts = c.interests
         if c
           status 200
-          {status: 200, data: c}
+          {status: 200, data: {
+            company: c,
+            posts: posts
+            }
+          }
         else
           response = {
             status: 404,

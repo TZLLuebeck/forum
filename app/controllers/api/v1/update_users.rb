@@ -22,7 +22,6 @@ module API
           error!(response, 409)          
           else 
             par = params[:data]
-            p params[:data][:typus]
             if params[:data][:typus] != "Student"
               par1 = params[:data]
               par2 = params[:data][:contact_data]
@@ -31,6 +30,18 @@ module API
             end
             type = params[:data][:typus]
             par.delete :typus
+            if !par.has_key?(:company_id)
+              c = Company.create(params[:data][:company])
+              if !c
+                response = {
+                  status: 400,
+                  error: 'could_not_create_company'
+                }
+                error!(response, 400)
+              end
+              par[:company_id] = c.id
+              par.delete :company
+            end
             u = User.new(par)
             u.add_role(type.downcase.to_sym)
             if u.save
@@ -49,7 +60,8 @@ module API
                   expires_in: token.expires_in
                 }
               }
-              #TestMailer.welcome_email(u).deliver_later
+              WelcomeMailer.welcome_email(u).deliver_later
+              #WelcomeMailWorker.perform_async(u)
               status 200
               { status: 200, data: ret}
             else

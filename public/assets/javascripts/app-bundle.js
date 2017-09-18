@@ -442,6 +442,22 @@ angular.module('mediMeet').config(["$stateProvider", "$urlRouterProvider", "$loc
         controller: 'CompanyCtrl',
         controllerAs: 'cmp'
       }
+    },
+    params: {
+      id: null
+    },
+    resolve: {
+      comp: ["Company", "Helper", "$stateParams", function(Company, Helper, $stateParams) {
+        if (!$stateParams.id) {
+          Helper.goBack();
+        }
+        return Company.getOne($stateParams.id).then(function(result) {
+          return result.data;
+        }, function(error) {
+          console.log(error);
+          return Helper.goBack();
+        });
+      }]
     }
   }).state('root.companies.newcomp', {
     url: '/create',
@@ -663,7 +679,7 @@ angular.module('mediMeet').service('Company', ["mediREST", "$q", "Upload", "Rail
     var defer;
     defer = $q.defer();
     Upload.upload({
-      url: ("" + Rails.host) + '/api/v1/companies/',
+      url: '/api/v1/companies/',
       data: {
         data: company
       }
@@ -1014,7 +1030,7 @@ angular.module('mediMeet').service('User', ["mediREST", "$q", "$http", "Rails", 
     users.post().then(function(response) {
       return defer.resolve(response.data);
     }, function(error) {
-      return defer.reject(response.data);
+      return defer.reject(error.data.error);
     });
     return defer.promise;
   };
@@ -1040,7 +1056,7 @@ angular.module('mediMeet').service('User', ["mediREST", "$q", "$http", "Rails", 
     packet.get().then(function(response) {
       return defer.resolve(response.data);
     }, function(error) {
-      return defer.reject(response.error);
+      return defer.reject(error.error);
     });
     return defer.promise;
   };
@@ -1056,7 +1072,7 @@ angular.module('mediMeet').service('User', ["mediREST", "$q", "$http", "Rails", 
     packet.get().then(function(response) {
       return defer.resolve(response);
     }, function(error) {
-      return defer.reject(response);
+      return defer.reject(error);
     });
     return defer.promise;
   };
@@ -1322,9 +1338,15 @@ angular.module('mediMeet').controller('UserListCtrl', ["$state", "User", "$scope
   return this;
 }]);
 
-angular.module('mediMeet').controller('CompaniesCtrl', ["Company", "list", function(Company, list) {
+angular.module('mediMeet').controller('CompaniesCtrl', ["Company", "list", "$state", function(Company, list, $state) {
   this.companyList = list;
-  console.log(this.companyList);
+  this.viewCompany = (function(_this) {
+    return function(id) {
+      return $state.go('root.companies.company', {
+        id: id
+      });
+    };
+  })(this);
   return this;
 }]);
 
@@ -1356,7 +1378,7 @@ angular.module('mediMeet').controller('HomeCtrl', ["$state", "Interests", functi
 
 var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-angular.module('mediMeet').controller('NavCtrl', ["$timeout", "$scope", "mediREST", "User", "TokenContainer", "$state", "$rootScope", function($timeout, $scope, mediREST, User, TokenContainer, $state, $rootScope) {
+angular.module('mediMeet').controller('NavCtrl', ["$timeout", "$scope", "mediREST", "User", "TokenContainer", "$state", "$rootScope", "toaster", function($timeout, $scope, mediREST, User, TokenContainer, $state, $rootScope, toaster) {
   this.form = {};
   this.username = "default";
   this.admin = false;
@@ -1383,7 +1405,10 @@ angular.module('mediMeet').controller('NavCtrl', ["$timeout", "$scope", "mediRES
         return $rootScope.$broadcast('user:stateChanged');
       }, function(error) {
         if (error.status === 404) {
-          return console.log("Account doesn't exist.");
+          toaster.pop('error', "Nicht vorhanden.", "Es wurde kein Account mit diesem Accountnamen gefunden.");
+        }
+        if (error.status === 401 && error.error === 'wrong_password') {
+          return toaster.pop('error', "Falsches Passwort", "Das eingegebene Passwort war falsch.");
         }
       });
     };
@@ -1481,6 +1506,17 @@ angular.module('mediMeet').controller('SearchCtrl', ["Interests", "$stateParams"
   return this;
 }]);
 
+angular.module('mediMeet').controller('CompanyCtrl', ["comp", "$state", function(comp, $state) {
+  this.company = comp.company;
+  this.company.posts = comp.posts;
+  this.viewInterest = function(id) {
+    return $state.go('root.interest.hidden', {
+      id: id
+    });
+  };
+  return this;
+}]);
+
 angular.module('mediMeet').controller('NewCompanyCtrl', ["Company", "$state", function(Company, $state) {
   this.form = {
     company: {}
@@ -1499,7 +1535,7 @@ angular.module('mediMeet').controller('NewCompanyCtrl', ["Company", "$state", fu
 
 
 
-angular.module('mediMeet').controller('InterestCtrl', ["info", "$scope", "User", function(info, $scope, User) {
+angular.module('mediMeet').controller('InterestCtrl', ["info", "$scope", "User", "$state", function(info, $scope, User, $state) {
   this.interest = info;
   this.init = (function(_this) {
     return function() {
@@ -1508,6 +1544,13 @@ angular.module('mediMeet').controller('InterestCtrl', ["info", "$scope", "User",
       } else {
         return $scope.myint = false;
       }
+    };
+  })(this);
+  this.back = (function(_this) {
+    return function() {
+      return $state.go('root.explore', {
+        category: _this.interest.category
+      });
     };
   })(this);
   this.init();
@@ -1650,40 +1693,13 @@ angular.module('mediMeet').controller('NewPostCtrl', ["User", "Interests", "$sta
       _this.form.interest.category = _this.category.category;
       _this.form.interest.subcategory = _this.subcategory.subcategory;
       return Interests.createInterest(_this.form.interest).then(function(response) {
-        console.log(response);
-        return $state.go('root.admin.interestlist');
+        return $state.go('root.profile');
       });
     };
   })(this);
   this.abort = function() {
     return Helper.goBack();
   };
-  return this;
-}]);
-
-angular.module('mediMeet').controller('LoginCtrl', ["User", "TokenContainer", "mediREST", "$q", "$rootScope", "$state", function(User, TokenContainer, mediREST, $q, $rootScope, $state) {
-  this.form = {};
-  this.login = (function(_this) {
-    return function() {
-      var packet;
-      packet = mediREST.one('users').one('login');
-      packet.data = {
-        email: _this.form.user.email,
-        password: _this.form.user.password
-      };
-      console.log(packet.data);
-      return packet.post().then(function(response) {
-        User.user = response.data.user;
-        TokenContainer.set(response.data.token);
-        $rootScope.$broadcast('user:stateChanged');
-        return $state.go('root.home');
-      }, function(error) {
-        if (error.status === 404) {
-          return console.log("Account doesn't exist.");
-        }
-      });
-    };
-  })(this);
   return this;
 }]);
 
@@ -1723,9 +1739,9 @@ angular.module('mediMeet').controller('ProfileCtrl', ["User", "$state", "$stateP
       return _this.interestList = angular.copy(interests.data);
     };
   })(this);
-  this.viewInterest = (function(_this) {
+  this.editInterest = (function(_this) {
     return function(id) {
-      return $state.go('root.interest.hidden', {
+      return $state.go('root.interest.editinterest', {
         id: id
       });
     };
@@ -1782,7 +1798,8 @@ angular.module('mediMeet').controller('RegistrationCtrl', ["TokenContainer", "Us
   console.log('RegistrationCtrl active.');
   this.form = {
     user: {},
-    contact_data: {}
+    contact_data: {},
+    company: {}
   };
   this.regInProgress = false;
   this.errors = {};
@@ -1798,15 +1815,20 @@ angular.module('mediMeet').controller('RegistrationCtrl', ["TokenContainer", "Us
         _this.regInProgress = true;
         if (_this.form.user.typus !== 'Student') {
           _this.form.user.contact_data = _this.form.contact_data;
+          if (!_this.form.contact_data.company_id) {
+            delete _this.form.contact_data.company_id;
+            _this.form.company.typus = _this.form.user.typus;
+            _this.form.company.web = _this.form.user.web;
+            _this.form.user.company = _this.form.company;
+          }
         }
         return User.registerUser(_this.form.user).then(function(results) {
           _this.regInProgress = false;
-          console.log('Registration Data');
-          console.log(results);
           User.user = results.user;
           TokenContainer.set(results.token);
+          User.unauthorized = false;
           $rootScope.$broadcast('user:stateChanged');
-          return Helper.goBack();
+          return $state.go('root.interest.createinterest');
         }, function(error) {
           console.log('Register Error');
           console.log(error);
@@ -1822,11 +1844,12 @@ angular.module('mediMeet').controller('RegistrationCtrl', ["TokenContainer", "Us
   })(this);
   this.validate = (function(_this) {
     return function() {
-      var c, u, valid;
+      var c, cp, u, valid;
       valid = true;
       _this.errors = {};
       u = _this.form.user;
       c = _this.form.contact_data;
+      cp = _this.form.company;
       if (!u.typus) {
         _this.errors.typus = true;
         valid = false;
@@ -1866,9 +1889,13 @@ angular.module('mediMeet').controller('RegistrationCtrl', ["TokenContainer", "Us
           }
           valid = false;
         }
-        if (u.typus === "Firma") {
-          if (!c.company_id) {
-            _this.errors.company = true;
+        if (!c.company_id) {
+          if (!cp.name) {
+            _this.errors.company.name = true;
+            valid = false;
+          }
+          if (!cp.description) {
+            _this.errors.company.description = true;
             valid = false;
           }
         }
@@ -1917,10 +1944,11 @@ angular.module('mediMeet').factory('unauthorizedHandler', ["$injector", function
     var access, state;
     access = $injector.get('TokenContainer');
     state = $injector.get('$state');
-    if (access.get()) {
+    console.log(response);
+    if (response.error === 'token_expired') {
       access["delete"]();
       state.go('root.home');
-    } else {
+    } else if (response.error === 'invalid_token') {
       state.go('root.register');
     }
     deferred.reject(response);

@@ -14,7 +14,8 @@ module API
           requires :data, type: Hash do
             requires :name, type: String
             requires :description, type: String
-            optional :website, type: String
+            requires :typus, type: String
+            requires :website, type: String
             optional :logo, type: Rack::Multipart::UploadedFile
           end
         end
@@ -34,6 +35,10 @@ module API
         end
 
         desc 'get one company'
+        oauth2
+        params do 
+          requires :id, type: Integer
+        end
         get '/:id' do
           get_one(params)
         end

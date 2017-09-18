@@ -4,14 +4,13 @@ class MatchMailer < ApplicationMailer
 
   def one_for_all_email(user, post)
     @user = user
-    @url  = 'http://example.com/login'
-    mail(to: @user.email, subject: 'Ein neues Angebot könnte Sie interessieren.')
+    @post = post
+    mail(to: @user.email, subject: 'Eine neue Anzeige könnte Sie interessieren.')
   end
 
   def all_for_one_email(user, posts)
     @user = user
-    @url  = 'http://example.com/login'
-    mail(to: @user.email, subject: '')
+    @posts = posts
+    mail(to: @user.email, subject: 'Es wurden Anzeigen für Sie gefunden.')
   end
-
 end
