@@ -4,6 +4,20 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    
+    <p>Sehr geehrter Open Innovation Teilnehmer,<br>
+    <br>
+    ihr neues Angebot hat bereits einige Treffer gelandet, die zu ihren Kriterien passen.<br>
+    <br>
+    Neue Projektmöglichkeiten:</p>
+    <br>
+    <ul>
+    <% @data.each do |post| %>
+      <li>      
+        <a href="https://plattform.if-krankenhaus.de/match/<%=post['id'].to_s%>"><%=post['title'].to_s%></a>
+      </li>
+    <%end%>
+    </ul>    
+    <p>Freundliche Grüße,<br>
+    Ihr Open-Innovation Team</p> 
   </body>
 </html>

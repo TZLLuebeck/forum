@@ -91,15 +91,18 @@ module API
         if int
           Interest.increment_counter(:contacts, int.id)
           if int.save
-            p 'New Count'
-            p int.contacts
             u = User.find(int.user_id)
+            if u.company_id
+              c = Company.find(u.company_id)
+            end
             res = {
               firstname: u.firstname,
               lastname: u.lastname,
               email: u.email,
               web: u.web,
-              fon: u.fon
+              fon: u.fon,
+              cmp: c.name,
+              cmpt: c.typus
             }
             status 200
             {status: 200, data: res}

@@ -49,7 +49,7 @@ module API
             end
             optional :company, type: Hash do
               requires :name, type: String
-              requires :description, type: String
+              requires :description
               requires :typus, type: String
               optional :logo, type: Rack::Multipart::UploadedFile
             end            

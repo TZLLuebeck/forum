@@ -22,7 +22,7 @@ module API
             requires :typus, type: String
             requires :keywords, type: Array
             requires :title, type: String
-            requires :description, type: String
+            requires :description
           end
         end
         post '/' do
