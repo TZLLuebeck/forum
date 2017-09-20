@@ -10,17 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170918084750) do
+ActiveRecord::Schema.define(version: 20170920092920) do
 
   create_table "companies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
-    t.text "description"
+    t.text "description", limit: 4294967295
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "logo"
     t.boolean "validated"
     t.string "website"
     t.string "typus"
+    t.string "parent"
     t.index ["name"], name: "index_companies_on_name", unique: true
   end
 
@@ -31,7 +32,7 @@ ActiveRecord::Schema.define(version: 20170918084750) do
     t.string "typus"
     t.string "target"
     t.string "title"
-    t.text "description"
+    t.text "description", limit: 4294967295
     t.string "category"
     t.string "subcategory"
     t.integer "contacts"

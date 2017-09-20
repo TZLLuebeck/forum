@@ -29,14 +29,13 @@ class MatchmakingWorker
     ' AS roles ON roles.user_id = users.id) AS users ON interests.user_id = users.id '+
     'WHERE interests.id != '+idStr+' AND users.id != '+owneridStr+' AND rolename = "'+target+'" AND interests.offer = "'+find+'" AND interests.target IN '+role+' AND interests.name IN '+tags+' AND interests.category = "'+category+'" AND interests.subcategory = "'+subcategory+'"'  
     #related = ActiveRecord::Base.connection.execute(sql)
-    related = ActiveRecord::Base.connection.exec_query(sql, "Matchmaking", [ ]);
-    filter = related.to_hash.uniq
-    if filter.size
+    related = ActiveRecord::Base.connection.exec_query(sql, "Matchmaking", []).to_hash.uniq;
+    if related.size
       # Send fitting offers to Owner      
-      MatchMailer.all_for_one_email(owner, filter).deliver_later
+      MatchMailer.all_for_one_email(owner, related).deliver_later
       # Send Owner's offer to fitting Users
       mails = []
-      filter.each do |intr|
+      related.each do |intr|
         mails.push(intr['email'])
       end
       mails.uniq.each do |mail|

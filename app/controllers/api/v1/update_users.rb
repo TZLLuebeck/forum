@@ -95,15 +95,29 @@ module API
             { status: 200, data: ret}
           else
             response = {
-              status: 401,
-              error: 'wrong_password'
-            }
+              description: 'Das eingegebene Passwort war falsch.',
+              error: {
+                name: 'wrong_password',
+                state: 'unauthorized'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 401
+          }
           error!(response, 401)
           end
         else
           response = {
-            status: 404,
-            error: 'username_not_found'
+              description: 'Dieser Accountname existiert nicht.',
+              error: {
+                name: 'username_not_found',
+                state: 'not_found'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 401
           }
           error!(response, 404)
         end
@@ -146,8 +160,15 @@ module API
           end
         else
           response = {
-            status: 403,
-            error: 'no_permission'
+              description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+              error: {
+                name: 'no_ability',
+                state: 'forbidden'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 403
           }
           error!(response, 403)
         end
@@ -170,8 +191,15 @@ module API
           end
         else
           response = {
-            status: 403,
-            error: 'no_permission'
+              description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+              error: {
+                name: 'no_ability',
+                state: 'forbidden'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 403
           }
           error!(response, 403)
         end
@@ -192,8 +220,15 @@ module API
           end
         else
           response = {
-            status: 403,
-            error: 'no_permission'
+              description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+              error: {
+                name: 'no_ability',
+                state: 'forbidden'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 403
           }
           error!(response, 403)
         end
@@ -219,8 +254,15 @@ module API
           end
         else
           response = {
-            status: 403,
-            error: 'no_permission'
+              description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+              error: {
+                name: 'no_ability',
+                state: 'forbidden'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 403
           }
           error!(response, 403)
         end
@@ -243,8 +285,15 @@ module API
           end
         else
           response = {
-            status: 403,
-            error: 'no_permission'
+              description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+              error: {
+                name: 'no_ability',
+                state: 'forbidden'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 403
           }
           error!(response, 403)
         end

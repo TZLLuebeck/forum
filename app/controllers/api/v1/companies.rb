@@ -13,6 +13,7 @@ module API
         params do
           requires :data, type: Hash do
             requires :name, type: String
+            optional :parent, type: String
             requires :description
             requires :typus, type: String
             requires :website, type: String
@@ -55,6 +56,16 @@ module API
 
         desc 'edit company details'
         oauth2
+        params do
+          requires :data, type: Hash do
+            requires :name, type: String
+            optional :parent, type: String
+            requires :description
+            requires :typus, type: String
+            requires :website, type: String
+            optional :logo, type: Rack::Multipart::UploadedFile
+          end
+        end
         put '/:id' do
           edit_company(params)
         end

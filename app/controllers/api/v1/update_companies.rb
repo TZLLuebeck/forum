@@ -82,6 +82,33 @@ module API
       #UPDATE
       def edit_company(params)
         c = Company.find(params[:data][:id])
+        if Ability.new(current_resource_owner).can?(:update, c)
+          if c.update(params[:data])
+            status 200
+            { status: 200, message: 'ok', data: c }
+          else
+            response = {
+              status: 400,
+              error: 'update_error'
+            }
+            error!(response, 400)
+          end
+        else
+          response = {
+              description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+              error: {
+                name: 'no_ability',
+                state: 'forbidden'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 403
+          }
+          error!(response, 403)
+        end
+
+
       end
 
 

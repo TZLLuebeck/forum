@@ -39,24 +39,28 @@ class Ability
       can :read, :all
       can :update, User, id: user.id
       can :manage, Interest, user_id: user.id
+      can :edit, Company, id: user.company_id
     end
 
     if user.has_role? :firma
       can :read, :all
       can :update, User, id: user.id
       can :manage, Interest, user_id: user.id
+      can :edit, Company, id: user.company_id
     end
 
     if user.has_role? :institut
       can :read, :all
       can :update, User, id: user.id
       can :manage, Interest, user_id: user.id
+      can :edit, Company, id: user.company_id
     end
 
     if user.has_role? :admin
       can :read, :all
       can :manage, :all
       can :update, :all
+      can :edit, :all
       can :approve, Company
       can :uplift, User
     end
