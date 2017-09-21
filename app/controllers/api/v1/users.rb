@@ -59,6 +59,28 @@ module API
           create_user(params)
         end
 
+        desc 'Account created by an admin'
+        params do
+          requires :data, type: Hash do
+            requires :username, type: String
+            requires :password, type: String
+            requires :password_confirmation, type: String
+            requires :email, type: String
+            requires :typus, type: String
+            optional :contact_data, type: Hash do
+              requires :firstname, type: String
+              requires :lastname, type: String
+              requires :web, type: String
+              requires :fon, type: String
+              optional :company_id, type: Integer
+            end            
+          end
+        end
+        oauth2
+        post '/create' do
+          admin_create(params)
+        end
+
         desc 'Login Process'
         params do
           requires :data, type: Hash do

@@ -72,6 +72,63 @@ module API
         end
       end
 
+      def admin_create(params)
+        params.delete :format
+        r = current_resource_owner
+        if ((r.has_role? :admin) || (r.has_role :data)) 
+          if User.find_by(username: params[:data][:username])
+            response = {
+              status: 409,
+              error: 'username_exists'
+            }
+            error!(response, 409)
+          else
+            if User.find_by(email: params[:data][:email])
+            response = {
+              status: 409,
+              error: 'email_exists'
+            }
+            error!(response, 409)          
+            else 
+              par = params[:data]
+              if (params[:data][:typus] != "Data" || params[:data][:typus] != "Statistics")
+                par1 = params[:data]
+                par2 = params[:data][:contact_data]
+                par1.delete :contact_data
+                par = par1.merge(par2)
+              end
+              type = params[:data][:typus]
+              par.delete :typus
+              u = User.new(par)
+              u.add_role(type.downcase.to_sym)
+              if u.save
+                ret = {
+                  user: u.serializable_hash.merge(roles: u.roles.pluck(:name)),
+                }
+                status 200
+                { status: 200, data: ret}
+              else
+                status 400
+                { status: 400, error: 'registration_error', data: params}
+              end
+            end
+          end
+        else
+        response = {
+              description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+              error: {
+                name: 'no_ability',
+                state: 'forbidden'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 403
+          }
+          error!(response, 403)
+        end  
+      end
+
       def login(params)
         u = User.where(username: params[:data][:username]).first
         if u
