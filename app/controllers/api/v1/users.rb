@@ -140,6 +140,7 @@ module API
             optional :password, type: String
             optional :password_confirmation, type: String
             requires :current_password, type: String
+            optional :news, type: Boolean
           end
         end
         desc 'Update user'

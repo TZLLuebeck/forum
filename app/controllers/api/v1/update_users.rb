@@ -42,6 +42,7 @@ module API
               par[:company_id] = c.id
               par.delete :company
             end
+            par[:news] = true
             u = User.new(par)
             u.add_role(type.downcase.to_sym)
             if u.save
@@ -99,6 +100,7 @@ module API
               end
               type = params[:data][:typus]
               par.delete :typus
+              par[:news] = false
               u = User.new(par)
               u.add_role(type.downcase.to_sym)
               if u.save

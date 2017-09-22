@@ -30,6 +30,26 @@ module API
           error!(response, 400)
         end
       end
+
+      def assign_interest(params)
+        keywords = params[:data][:keywords]
+        params[:data].delete :keywords
+        ref = Interest.new(params[:data])
+        keywords.each do |keyword|
+            ref.tag_list.add(keyword)
+        end
+        ref.contacts = 0
+        if ref.save 
+          status 200
+          {status: 200, data: ref}
+        else
+          response = {
+            status: 400,
+            error: 'could_not_create'
+          }
+          error!(response, 400)
+        end
+      end
       
       #################
       #READ

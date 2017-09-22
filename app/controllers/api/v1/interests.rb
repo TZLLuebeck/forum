@@ -29,6 +29,25 @@ module API
           create_new_interest(params)
         end
 
+        desc 'Create a new interest for a selected user (admin only).'
+        oauth2
+        params do
+          requires :data, type: Hash do
+            requires :user_id, type: Integer
+            requires :offer, type: String
+            requires :target, type: String
+            requires :category, type: String
+            requires :subcategory, type: String
+            requires :typus, type: String
+            requires :keywords, type: Array
+            requires :title, type: String
+            requires :description
+          end
+        end
+        post '/create' do
+          assign_interest(params)
+        end
+
         ############################
         # => READ
         #    get interests
