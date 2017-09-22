@@ -30,7 +30,7 @@ class MatchmakingWorker
     'WHERE interests.id != '+idStr+' AND users.id != '+owneridStr+' AND rolename = "'+target+'" AND interests.offer = "'+find+'" AND interests.target IN '+role+' AND interests.name IN '+tags+' AND interests.category = "'+category+'" AND interests.subcategory = "'+subcategory+'"'  
     #related = ActiveRecord::Base.connection.execute(sql)
     related = ActiveRecord::Base.connection.exec_query(sql, "Matchmaking", []).to_hash.uniq;
-    if related.size
+    unless related.empty?
       # Send fitting offers to Owner      
       MatchMailer.all_for_one_email(owner, related).deliver_later
       # Send Owner's offer to fitting Users

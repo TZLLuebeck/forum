@@ -2198,12 +2198,17 @@ angular.module('mediMeet').factory('unauthorizedHandler', ["$injector", function
     access = $injector.get('TokenContainer');
     state = $injector.get('$state');
     console.log(response);
-    if (response.data.error.name === 'token_expired') {
-      access["delete"]();
-      state.go('root.home');
-    } else if (response.data.error.name === 'invalid_token') {
-      access["delete"]();
-      state.go('root.register');
+    if (response.data.error.error.name === 'invalid_token') {
+      console.log("Token invalid:");
+      if (response.data.error.reason = 'expired') {
+        console.log("Token expired.");
+        access["delete"]();
+        state.go('root.home');
+      } else {
+        console.log("No Token.");
+        access["delete"]();
+        state.go('root.register');
+      }
     }
     deferred.reject(response);
     return deferred.promise;

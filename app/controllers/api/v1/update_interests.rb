@@ -19,7 +19,7 @@ module API
         end
         ref.contacts = 0
         if ref.save 
-          ref.find_similar_interests         
+          ref.find_similar_interests
           status 200
           {status: 200, data: ref}
         else
