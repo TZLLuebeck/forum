@@ -4,6 +4,8 @@ class Interest < ApplicationRecord
 
   belongs_to :user
 
+  mount_uploader :attachment, AttachmentUploader
+
   #after_save :find_similar_interests
 
   def find_similar_interests

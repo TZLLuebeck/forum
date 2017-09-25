@@ -23,6 +23,7 @@ module API
             requires :keywords, type: Array
             requires :title, type: String
             requires :description
+            optional :attachment, type: Rack::Multipart::UploadedFile
           end
         end
         post '/' do
@@ -42,6 +43,7 @@ module API
             requires :keywords, type: Array
             requires :title, type: String
             requires :description
+            optional :attachment, type: Rack::Multipart::UploadedFile
           end
         end
         post '/create' do
@@ -109,6 +111,7 @@ module API
             requires :keywords, type: Array
             requires :title, type: String
             requires :description, type: String
+            optional :attachment, type: Rack::Multipart::UploadedFile
           end
         end
         put '/' do
