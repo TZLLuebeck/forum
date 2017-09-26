@@ -15,14 +15,14 @@ module API
         oauth2
         params do
           requires :data, type: Hash do
-            requires :offer, type: String
-            requires :target, type: String
-            requires :category, type: String
-            requires :subcategory, type: String
-            requires :typus, type: String
+            requires :offer, type: String, values: ["offer", "search"]
+            requires :target, type: String, values: ["Klinik", "Institut", "Firma", "Student", "Any"]
+            requires :category, type: String, values: ["Hospital IT 4.0", "Medizintechnik 4.0", "Facility Management 4.0", "Klinische Prozesse 4.0"]
+            requires :subcategory, type: String, values: ["Cloud/IT-Services/Big Data", "Mobile Anwendungen", "Daten-/Dokumentenaustausche", "Cyber-Security & Privacy", "Interoperabilität", "Assistenzsysteme", "Wartung und Service", "Usability", "IT-gestützte Instandhaltung", "IoT im Krankenhaus", "Blue/Green Hospital", "Supply-Chain-Management", "e-Health/Medical Apps", "Digitale Versorgungsplattform", "Qualitäts-/Leistungserfassung", "Integrierte Prozesse"]
+            requires :typus, type: String, values: ["FE+E-Projektkooperation", "FE+E-Auftragszusammenarbeit", "Bachelor/Masterarbeit", "Praktikum"]
             requires :keywords, type: Array
-            requires :title, type: String
-            requires :description
+            requires :title, type: String, allow_blank: false
+            requires :description, allow_blank: false
             optional :attachment, type: Rack::Multipart::UploadedFile
           end
         end
@@ -35,14 +35,14 @@ module API
         params do
           requires :data, type: Hash do
             requires :user_id, type: Integer
-            requires :offer, type: String
-            requires :target, type: String
-            requires :category, type: String
-            requires :subcategory, type: String
-            requires :typus, type: String
+            requires :offer, type: String, values: ["offer", "search"]
+            requires :target, type: String, values: ["Klinik", "Institut", "Firma", "Student", "Any"]
+            requires :category, type: String, values: ["Hospital IT 4.0", "Medizintechnik 4.0", "Facility Management 4.0", "Klinische Prozesse 4.0"]
+            requires :subcategory, type: String, values: ["Cloud/IT-Services/Big Data", "Mobile Anwendungen", "Daten-/Dokumentenaustausche", "Cyber-Security & Privacy", "Interoperabilität", "Assistenzsysteme", "Wartung und Service", "Usability", "IT-gestützte Instandhaltung", "IoT im Krankenhaus", "Blue/Green Hospital", "Supply-Chain-Management", "e-Health/Medical Apps", "Digitale Versorgungsplattform", "Qualitäts-/Leistungserfassung", "Integrierte Prozesse"]
+            requires :typus, type: String, values: ["FE+E-Projektkooperation", "FE+E-Auftragszusammenarbeit", "Bachelor/Masterarbeit", "Praktikum"]
             requires :keywords, type: Array
-            requires :title, type: String
-            requires :description
+            requires :title, type: String, allow_blank: false
+            requires :description, allow_blank: false
             optional :attachment, type: Rack::Multipart::UploadedFile
           end
         end
@@ -103,14 +103,14 @@ module API
         params do
           requires :data, type: Hash do
             requires :id, type: Integer
-            requires :offer, type: String
-            requires :target, type: String
-            requires :category, type: String
-            requires :subcategory, type: String
-            requires :typus, type: String
-            requires :keywords, type: Array
-            requires :title, type: String
-            requires :description, type: String
+            optional :offer, type: String, values: ["offer", "search"]
+            optional :target, type: String, values: ["Klinik", "Institut", "Firma", "Student", "Any"]
+            optional :category, type: String, values: ["Hospital IT 4.0", "Medizintechnik 4.0", "Facility Management 4.0", "Klinische Prozesse 4.0"]
+            optional :subcategory, type: String, values: ["Cloud/IT-Services/Big Data", "Mobile Anwendungen", "Daten-/Dokumentenaustausche", "Cyber-Security & Privacy", "Interoperabilität", "Assistenzsysteme", "Wartung und Service", "Usability", "IT-gestützte Instandhaltung", "IoT im Krankenhaus", "Blue/Green Hospital", "Supply-Chain-Management", "e-Health/Medical Apps", "Digitale Versorgungsplattform", "Qualitäts-/Leistungserfassung", "Integrierte Prozesse"]
+            optional :typus, type: String, values: ["FE+E-Projektkooperation", "FE+E-Auftragszusammenarbeit", "Bachelor/Masterarbeit", "Praktikum"]
+            optional :keywords, type: Array
+            optional :title, type: String, allow_blank: false
+            optional :description, allow_blank: false
             optional :attachment, type: Rack::Multipart::UploadedFile
           end
         end

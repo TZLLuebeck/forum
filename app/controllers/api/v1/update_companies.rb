@@ -61,7 +61,9 @@ module API
 
       def get_one(params)
         c = Company.find(params[:id])
-        posts = c.interests
+        posts = c.interests.map do |post|
+          post.serializable_hash.merge(keywords: post.tag_list)
+        end
         if c
           status 200
           {status: 200, data: {

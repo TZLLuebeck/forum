@@ -12,11 +12,11 @@ module API
         oauth2
         params do
           requires :data, type: Hash do
-            requires :name, type: String
+            requires :name, type: String, allow_blank: false
             optional :parent, type: String
-            requires :description
-            requires :typus, type: String
-            requires :website, type: String
+            requires :description, allow_blank: false
+            requires :typus, type: String, values: ["Klinik", "Institut", "Firma"]
+            requires :website, type: String, allow_blank: false
             optional :logo, type: Rack::Multipart::UploadedFile
           end
         end
@@ -58,11 +58,11 @@ module API
         oauth2
         params do
           requires :data, type: Hash do
-            requires :name, type: String
+            requires :name, type: String, allow_blank: false
             optional :parent, type: String
-            requires :description
-            requires :typus, type: String
-            requires :website, type: String
+            optional :description, allow_blank: false
+            optional :typus, type: String, values: ["Klinik", "Institut", "Firma"]
+            optional :website, type: String, allow_blank: false
             optional :logo, type: Rack::Multipart::UploadedFile
           end
         end

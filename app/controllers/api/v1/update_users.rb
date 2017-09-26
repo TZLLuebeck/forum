@@ -327,6 +327,28 @@ module API
         end
       end
 
+      def reset_password(params)
+        if u = User.find_by(username: params[:data])
+          generated_password = Devise.friendly_token.first(15)
+          if u.update({password: generated_password, password_confirmation: generated_password})
+            PasswordMailer.reset_password_email(u, generated_password).deliver_later
+          end
+        else
+          response = {
+            description: 'Es wurde kein Account mit diesem Namen gefunden.',
+            error: {
+              name: 'wrong_username',
+              state: 'not_found'
+              },
+            reason: 'unknown',
+            redirect_uri: nil,
+            response_on_fragment: nil,
+            status: 404
+          }
+          error!(response, 404)
+        end
+      end
+
       # DESTROY
 
       def destroy_user(params)

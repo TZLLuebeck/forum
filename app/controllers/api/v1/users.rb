@@ -34,23 +34,26 @@ module API
 
         desc 'Creates a normal user account'
         params do
-          requires :data, type: Hash do
-            requires :username, type: String
-            requires :password, type: String
-            requires :password_confirmation, type: String
-            requires :email, type: String
-            requires :typus, type: String
+          requires :data, type: Hash, message: "data:missing" do
+            requires :username, type: String, allow_blank: {value: false, message: "username:blank"}, message: "username:missing"
+            requires :password, type: String, allow_blank: {value: false, message: "password:blank"}, message: "password:missing"
+            requires :password_confirmation, type: String, allow_blank: {value: false, message: "password_confirmation:blank"}, message: "password_confirmation:missing"
+            requires :email, type: String, regexp: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, message: "email:missing"
+            requires :typus, type: String, values: ["Klinik", "Institut", "Firma", "Student"], message: "typus:missing"
             optional :contact_data, type: Hash do
-              requires :firstname, type: String
-              requires :lastname, type: String
-              requires :web, type: String
-              requires :fon, type: String
+              requires :firstname, type: String, allow_blank: {value: false, message: "firstname:blank"}, message: "firstname:missing"
+              requires :lastname, type: String, allow_blank: {value: false, message: "lastname:blank"}, message: "lastname:missing"
+              requires :plz, type: String, allow_blank: {value: false, message: "plz:blank"}, message: "plz:missing"
+              requires :ort, type: String, allow_blank: {value: false, message: "ort:blank"}, message: "ort:missing"
+              requires :web, type: String, allow_blank: {value: false, message: "web:blank"}, message: "web:missing"
+              requires :fon, type: String, allow_blank: {value: false, message: "fon:blank"}, message: "fon:missing"
               optional :company_id, type: Integer
             end
             optional :company, type: Hash do
-              requires :name, type: String
-              requires :description
-              requires :typus, type: String
+              requires :name, type: String, allow_blank: {value: false, message: "companyname:blank"}, message: "companyname:missing"
+              requires :description, allow_blank: {value: false, message: "companydescription:blank"}, message: "companydescription:missing"
+              requires :typus, type: String, values: ["Klinik", "Institut", "Firma"], message: "companytypus:missing"
+              optional :parent, type: String, allow_blank: {value: false, message: "parent:blank"}
               optional :logo, type: Rack::Multipart::UploadedFile
             end            
           end
@@ -62,16 +65,18 @@ module API
         desc 'Account created by an admin'
         params do
           requires :data, type: Hash do
-            requires :username, type: String
-            requires :password, type: String
-            requires :password_confirmation, type: String
+            requires :username, type: String, allow_blank: false
+            requires :password, type: String, allow_blank: false
+            requires :password_confirmation, type: String, allow_blank: false
             requires :email, type: String
-            requires :typus, type: String
+            requires :typus, type: String, values: ["Klinik", "Institut", "Firma", "Data", "Statistics"]
             optional :contact_data, type: Hash do
-              requires :firstname, type: String
-              requires :lastname, type: String
-              requires :web, type: String
-              requires :fon, type: String
+              requires :firstname, type: String, allow_blank: false
+              requires :lastname, type: String, allow_blank: false
+              requires :plz, type: String, allow_blank: false
+              requires :ort, type: String, allow_blank: false
+              requires :web, type: String, allow_blank: false
+              requires :fon, type: String, allow_blank: false
               optional :company_id, type: Integer
             end            
           end
@@ -84,8 +89,8 @@ module API
         desc 'Login Process'
         params do
           requires :data, type: Hash do
-            requires :username, type: String
-            requires :password, type: String
+            requires :username, type: String, allow_blank: false
+            requires :password, type: String, allow_blank: false
           end
         end
         post '/login' do
@@ -131,25 +136,30 @@ module API
 
         params do
           requires :data, type: Hash do
-            requires :username, type: String
-            optional :email, type: String
-            optional :ort, type: String
-            optional :plz, type: String
-            optional :web, type: String
-            optional :fon, type: String
-            optional :password, type: String
-            optional :password_confirmation, type: String
-            requires :current_password, type: String
+            requires :username, type: String, allow_blank: false
+            optional :email, type: String, regexp: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+            optional :ort, type: String, allow_blank: false
+            optional :plz, type: String, allow_blank: false
+            optional :web, type: String, allow_blank: false
+            optional :fon, type: String, allow_blank: false
+            optional :password, type: String, allow_blank: false
+            optional :password_confirmation, type: String, allow_blank: false
+            requires :current_password, type: String, allow_blank: false
             optional :news, type: Boolean
           end
         end
         desc 'Update user'
         oauth2
         put '/' do
-          p params
           update_user(params)
         end
 
+        params do
+          requires :data, type: String
+        end
+        post '/reset' do
+          reset_password(params)
+        end
 
         ##################
         #
