@@ -14,8 +14,10 @@ module API
         keywords = params[:data][:keywords]
         params[:data].delete :keywords
         ref = Interest.new(params[:data])
-        keywords.each do |keyword|
-            ref.tag_list.add(keyword)
+        if keywords
+          keywords.each do |keyword|
+              ref.tag_list.add(keyword)
+          end
         end
         ref.contacts = 0
         if ref.save 
@@ -35,8 +37,10 @@ module API
         keywords = params[:data][:keywords]
         params[:data].delete :keywords
         ref = Interest.new(params[:data])
-        keywords.each do |keyword|
-            ref.tag_list.add(keyword)
+        if keywords
+          keywords.each do |keyword|
+              ref.tag_list.add(keyword)
+          end
         end
         ref.contacts = 0
         if ref.save 
@@ -74,7 +78,7 @@ module API
       end
 
       def get_by_category(params)
-        int = Interest.where(category: params[:category])
+        int = Interest.where(category: params[:category]).or(Interest.where(category: "Beliebig"))
         res = int.map do |element|        
           element.serializable_hash.merge(keywords: element.tag_list)
         end

@@ -66,8 +66,18 @@ module API
               status 200
               { status: 200, data: ret}
             else
-              status 400
-              { status: 400, error: 'registration_error', data: params}
+              response = {
+                description: 'Die Registrierung ist fehlgeschlagen.',
+                error: {
+                  name: 'could_not_save',
+                  state: 'internal_server_error'
+                  },
+                reason: 'unknown',
+                redirect_uri: nil,
+                response_on_fragment: nil,
+                status: 500
+                }
+              error!(response, 500)
             end
           end
         end
@@ -110,8 +120,18 @@ module API
                 status 200
                 { status: 200, data: ret}
               else
-                status 400
-                { status: 400, error: 'registration_error', data: params}
+                response = {
+                  description: 'Die Registrierung ist fehlgeschlagen.',
+                  error: {
+                    name: 'could_not_save',
+                    state: 'internal_server_error'
+                    },
+                  reason: 'unknown',
+                  redirect_uri: nil,
+                  response_on_fragment: nil,
+                  status: 500
+                }
+                error!(response, 500)
               end
             end
           end
@@ -162,9 +182,9 @@ module API
               reason: 'unknown',
               redirect_uri: nil,
               response_on_fragment: nil,
-              status: 401
+              status: 403
           }
-          error!(response, 401)
+          error!(response, 403)
           end
         else
           response = {
@@ -176,7 +196,7 @@ module API
               reason: 'unknown',
               redirect_uri: nil,
               response_on_fragment: nil,
-              status: 401
+              status: 404
           }
           error!(response, 404)
         end
@@ -195,10 +215,17 @@ module API
             { status: 200, data: res }
           else
             response = {
-              status: 400,
-              error: 'read_error'
+              description: 'Es wurden keine anderen Nutzer gefunden.',
+              error: {
+                name: 'no_users',
+                state: 'not_found'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 404
             }
-            error!(response, 400)
+            error!(response, 404)
           end
         end
       end
@@ -207,13 +234,19 @@ module API
         u = (id = params[:id]) == 'me' ? current_resource_owner : User.find(id)
         if Ability.new(current_resource_owner).can?(:read, u)
           if res = u.serializable_hash.merge(roles: u.roles.pluck(:name))
-            p res
             status 200
             { status: 200, data: res }
           else
             response = {
-              status: 404,
-              error: 'user_not_found'
+              description: 'Der Nutzer konnte nicht gefunden werden.',
+              error: {
+                name: 'user_not_found',
+                state: 'not_found'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 404
             }
             error!(response, 404)
           end
@@ -243,10 +276,17 @@ module API
             { status: 200, data: res }
           else
             response = {
-              status: 400,
-              error: 'read_error'
+              description: 'Es konnten keine Nutzer gefunden werden.',
+              error: {
+                name: 'no_users',
+                state: 'not_found'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 404
             }
-            error!(response, 400)
+            error!(response, 404)
           end
         else
           response = {
@@ -272,8 +312,15 @@ module API
             { status: 200, data: int}
           else
             response = {
-              status: 404,
-              error: 'user_not_found'
+              description: 'Es konnten keine Profile gefunden werden.',
+              error: {
+                name: 'no_interests',
+                state: 'not_found'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 404
             }
             error!(response, 404)
           end
@@ -304,24 +351,30 @@ module API
             status 200
             { status: 200, message: 'ok', data: u }
           else
-            p u.errors.inspect
             response = {
-              status: 400,
-              error: 'update_error'
-            }
-            error!(response, 400)
-          end
-        else
-          response = {
-              description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+              description: 'Das Update ist fehlgeschlagen.',
               error: {
-                name: 'no_ability',
-                state: 'forbidden'
+                name: 'could_not_save',
+                state: 'internal_server_error'
                 },
               reason: 'unknown',
               redirect_uri: nil,
               response_on_fragment: nil,
-              status: 403
+              status: 500
+            }
+            error!(response, 500)
+          end
+        else
+          response = {
+            description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+            error: {
+              name: 'no_ability',
+              state: 'forbidden'
+              },
+            reason: 'unknown',
+            redirect_uri: nil,
+            response_on_fragment: nil,
+            status: 403
           }
           error!(response, 403)
         end
@@ -359,10 +412,17 @@ module API
             { status: 200, message: 'ok' }
           else
             response = {
-              status: 400,
-              error: 'delete_error'
+              description: 'Löschen ist fehlgeschlagen.',
+              error: {
+                name: 'could_not_delete',
+                state: 'internal_server_error'
+                },
+              reason: 'unknown',
+              redirect_uri: nil,
+              response_on_fragment: nil,
+              status: 500
             }
-            error!(response, 400)
+            error!(response, 500)
           end
         else
           response = {

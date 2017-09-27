@@ -35,25 +35,25 @@ module API
         desc 'Creates a normal user account'
         params do
           requires :data, type: Hash, message: "data:missing" do
-            requires :username, type: String, allow_blank: {value: false, message: "username:blank"}, message: "username:missing"
-            requires :password, type: String, allow_blank: {value: false, message: "password:blank"}, message: "password:missing"
-            requires :password_confirmation, type: String, allow_blank: {value: false, message: "password_confirmation:blank"}, message: "password_confirmation:missing"
-            requires :email, type: String, regexp: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, message: "email:missing"
-            requires :typus, type: String, values: ["Klinik", "Institut", "Firma", "Student"], message: "typus:missing"
+            requires :username, type: String, allow_blank: {value: false, message: "username:Der Accountname darf nicht nur aus Leerzeichen bestehen."}, message: "username:Der Accountname fehlt."
+            requires :password, type: String, allow_blank: {value: false, message: "password:Das Passwort darf nicht nur aus Leerzeichen bestehen"}, message: "password:Das Passwort fehlt."
+            requires :password_confirmation, type: String, allow_blank: {value: false, message: "password_confirmation:Die Passwort-Bestätigung darf nicht nur aus Leerzeichen bestehen."}, message: "password_confirmation:Die Passwort-Bestätigung fehlt."
+            requires :email, type: String, regexp: {value: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, message: "email:Ungültiges Email-Format."}, message: "email:Die Email fehlt."
+            requires :typus, type: String, values: {value: ["Klinik", "Institut", "Firma", "Student"], message: "Ungültiger Accounttyp."}, message: "typus:Es muss ein Accounttyp ausgewählt werden."
             optional :contact_data, type: Hash do
-              requires :firstname, type: String, allow_blank: {value: false, message: "firstname:blank"}, message: "firstname:missing"
-              requires :lastname, type: String, allow_blank: {value: false, message: "lastname:blank"}, message: "lastname:missing"
-              requires :plz, type: String, allow_blank: {value: false, message: "plz:blank"}, message: "plz:missing"
-              requires :ort, type: String, allow_blank: {value: false, message: "ort:blank"}, message: "ort:missing"
-              requires :web, type: String, allow_blank: {value: false, message: "web:blank"}, message: "web:missing"
-              requires :fon, type: String, allow_blank: {value: false, message: "fon:blank"}, message: "fon:missing"
+              requires :firstname, type: String, allow_blank: {value: false, message: "firstname:blank"}, message: "firstname:Der Vorname fehlt."
+              requires :lastname, type: String, allow_blank: {value: false, message: "lastname:blank"}, message: "lastname:Der Nachname fehlt."
+              requires :plz, type: String, allow_blank: {value: false, message: "plz:blank"}, message: "plz:Die Postleitzahl fehlt."
+              requires :ort, type: String, allow_blank: {value: false, message: "ort:blank"}, message: "ort:Der Ort fehlt."
+              requires :web, type: String, allow_blank: {value: false, message: "web:blank"}, message: "web:Die Webaddresse fehlt."
+              requires :fon, type: String, allow_blank: {value: false, message: "fon:Die Telefonnummer darf nicht nur aus Leerzeichen bestehen."}, message: "fon:Die Telefonnummer fehlt."
               optional :company_id, type: Integer
             end
             optional :company, type: Hash do
-              requires :name, type: String, allow_blank: {value: false, message: "companyname:blank"}, message: "companyname:missing"
-              requires :description, allow_blank: {value: false, message: "companydescription:blank"}, message: "companydescription:missing"
-              requires :typus, type: String, values: ["Klinik", "Institut", "Firma"], message: "companytypus:missing"
-              optional :parent, type: String, allow_blank: {value: false, message: "parent:blank"}
+              requires :name, type: String, allow_blank: {value: false, message: "companyname:Der Firmenname darf nicht nur aus Leerzeichen bestehen."}, message: "companyname:Der Firmenname fehlt."
+              requires :description, allow_blank: {value: false, message: "companydescription:Die Kurzbeschreibung darf nicht nur aus Leerzeichen bestehen."}, message: "companydescription:Die Kurzbeschreibung fehlt."
+              requires :typus, type: String, values: {value: ["Klinik", "Institut", "Firma"], message: "Ungültiger Firmentyp"}, message: "companytypus:missing"
+              optional :parent, type: String, allow_blank: {value: false, message: "parent:Die Zugehörigkeit darf nicht nur aus Leerzeichen bestehen."}
               optional :logo, type: Rack::Multipart::UploadedFile
             end            
           end
