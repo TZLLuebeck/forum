@@ -26,10 +26,10 @@ module API
           {status: 200, data: ref}
         else
           response = {
-            status: 400,
+            status: 500,
             error: 'could_not_create'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
 
@@ -48,10 +48,10 @@ module API
           {status: 200, data: ref}
         else
           response = {
-            status: 400,
+            status: 500,
             error: 'could_not_create'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
       
@@ -70,10 +70,10 @@ module API
           {status: 200, data: res}
         else
           response = {
-            status: 400,
+            status: 500,
             error: 'read_error'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
 
@@ -87,10 +87,10 @@ module API
           {status: 200, data: res}
         else
           response = {
-            status: 400,
+            status: 500,
             error: 'read_error'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
 
@@ -103,10 +103,10 @@ module API
           {status: 200, data: res}
         else
           response = {
-            status: 400,
+            status: 500,
             error: 'read_error'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
 
@@ -149,7 +149,7 @@ module API
           {status: 200, data: keywords}
         else
           response = {
-            error: 400,
+            error: 500,
             message: 'could_not_read_keywords'
           }
         end
@@ -183,10 +183,10 @@ module API
         else
           p i.errors.inspect
           response = {
-            status: 400,
+            status: 500,
             error: 'update_error'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
 
@@ -200,10 +200,10 @@ module API
           { status: 200, message: 'ok' }
         else
           response = {
-            status: 400,
+            status: 500,
             error: 'delete_error'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
     end

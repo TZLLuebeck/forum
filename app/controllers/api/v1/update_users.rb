@@ -34,10 +34,17 @@ module API
               c = Company.create(params[:data][:company])
               if !c
                 response = {
-                  status: 400,
-                  error: 'could_not_create_company'
+                  description: 'Die Firma konnte nicht erstellt werden.',
+                  error: {
+                    name: 'could_not_save',
+                    state: 'internal_server_error'
+                    },
+                  reason: 'unknown',
+                  redirect_uri: nil,
+                  response_on_fragment: nil,
+                  status: 500
                 }
-                error!(response, 400)
+                error!(response, 500)
               end
               par[:company_id] = c.id
               par.delete :company
@@ -345,30 +352,45 @@ module API
       def update_user(params)
         params[:data].delete :roles
         u = User.find(params[:data][:id])
-        if Ability.new(current_resource_owner).can?(:update, u)
-          if u.update_with_password(params[:data])
-            p 'Saved!'
-            status 200
-            { status: 200, message: 'ok', data: u }
+        if u.valid_password?(params[:data][:current_password])
+          if Ability.new(current_resource_owner).can?(:update, u)
+            if u.update_with_password(params[:data])
+              p 'Saved!'
+              status 200
+              { status: 200, message: 'ok', data: u }
+            else
+              response = {
+                description: 'Das Update ist fehlgeschlagen.',
+                error: {
+                  name: 'could_not_save',
+                  state: 'internal_server_error'
+                  },
+                reason: 'unknown',
+                redirect_uri: nil,
+                response_on_fragment: nil,
+                status: 500
+              }
+              error!(response, 500)
+            end
           else
             response = {
-              description: 'Das Update ist fehlgeschlagen.',
+              description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
               error: {
-                name: 'could_not_save',
-                state: 'internal_server_error'
+                name: 'no_ability',
+                state: 'forbidden'
                 },
               reason: 'unknown',
               redirect_uri: nil,
               response_on_fragment: nil,
-              status: 500
+              status: 403
             }
-            error!(response, 500)
+            error!(response, 403)
           end
         else
           response = {
-            description: 'Sie haben nicht die nötigen Rechte, um diese Aktion durchzuführen.',
+            description: 'Das eingegebene Passwort war falsch.',
             error: {
-              name: 'no_ability',
+              name: 'wrong_password',
               state: 'forbidden'
               },
             reason: 'unknown',

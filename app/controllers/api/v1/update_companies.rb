@@ -21,10 +21,10 @@ module API
             {status: 200, data: c}
           else
             response = {
-              status: 400,
+              status: 500,
               error: 'could_not_create'
             }
-            error!(response, 400)
+            error!(response, 500)
           end
         end
       end
@@ -38,10 +38,10 @@ module API
           {status: 200, data: c}
         else
           response = {
-            status: 400,
+            status: 500,
             error: 'read_error'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
 
@@ -52,10 +52,10 @@ module API
           {status: 200, data: c}
         else
           response = {
-            status: 400,
+            status: 500,
             error: 'read_error'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
 
@@ -90,10 +90,10 @@ module API
             { status: 200, message: 'ok', data: c }
           else
             response = {
-              status: 400,
+              status: 500,
               error: 'update_error'
             }
-            error!(response, 400)
+            error!(response, 500)
           end
         else
           response = {
@@ -123,10 +123,10 @@ module API
             {status: 200, data: 'approval_successful'}
           else
             response = {
-              status: 400,
+              status: 500,
               error: 'approval_failed'
             }
-            error!(response, 400)
+            error!(response, 500)
           end
         else
           response = {
@@ -147,10 +147,10 @@ module API
           {status: 200}
         else
           response = {
-            status: 400,
+            status: 500,
             error: 'delete_error'
           }
-          error!(response, 400)
+          error!(response, 500)
         end
       end
 

@@ -64,19 +64,19 @@ module API
 
         desc 'Account created by an admin'
         params do
-          requires :data, type: Hash do
-            requires :username, type: String, allow_blank: false
-            requires :password, type: String, allow_blank: false
-            requires :password_confirmation, type: String, allow_blank: false
-            requires :email, type: String
-            requires :typus, type: String, values: ["Klinik", "Institut", "Firma", "Data", "Statistics"]
+          requires :data, type: Hash, message: "data:missing" do
+            requires :username, type: String, allow_blank: {value: false, message: "username:Der Accountname darf nicht nur aus Leerzeichen bestehen."}, message: "username:Der Accountname fehlt."
+            requires :password, type: String, allow_blank: {value: false, message: "password:Das Passwort darf nicht nur aus Leerzeichen bestehen"}, message: "password:Das Passwort fehlt."
+            requires :password_confirmation, type: String, allow_blank: {value: false, message: "password_confirmation:Die Passwort-Bestätigung darf nicht nur aus Leerzeichen bestehen."}, message: "password_confirmation:Die Passwort-Bestätigung fehlt."
+            requires :email, type: String, regexp: {value: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, message: "email:Ungültiges Email-Format."}, message: "email:Die Email fehlt."
+            requires :typus, type: String, values: {value: ["Klinik", "Institut", "Firma", "Student"], message: "Ungültiger Accounttyp."}, message: "typus:Es muss ein Accounttyp ausgewählt werden."
             optional :contact_data, type: Hash do
-              requires :firstname, type: String, allow_blank: false
-              requires :lastname, type: String, allow_blank: false
-              requires :plz, type: String, allow_blank: false
-              requires :ort, type: String, allow_blank: false
-              requires :web, type: String, allow_blank: false
-              requires :fon, type: String, allow_blank: false
+              requires :firstname, type: String, allow_blank: {value: false, message: "firstname:blank"}, message: "firstname:Der Vorname fehlt."
+              requires :lastname, type: String, allow_blank: {value: false, message: "lastname:blank"}, message: "lastname:Der Nachname fehlt."
+              requires :plz, type: String, allow_blank: {value: false, message: "plz:blank"}, message: "plz:Die Postleitzahl fehlt."
+              requires :ort, type: String, allow_blank: {value: false, message: "ort:blank"}, message: "ort:Der Ort fehlt."
+              requires :web, type: String, allow_blank: {value: false, message: "web:blank"}, message: "web:Die Webaddresse fehlt."
+              requires :fon, type: String, allow_blank: {value: false, message: "fon:Die Telefonnummer darf nicht nur aus Leerzeichen bestehen."}, message: "fon:Die Telefonnummer fehlt."
               optional :company_id, type: Integer
             end            
           end
@@ -136,15 +136,17 @@ module API
 
         params do
           requires :data, type: Hash do
-            requires :username, type: String, allow_blank: false
-            optional :email, type: String, regexp: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
-            optional :ort, type: String, allow_blank: false
-            optional :plz, type: String, allow_blank: false
-            optional :web, type: String, allow_blank: false
-            optional :fon, type: String, allow_blank: false
-            optional :password, type: String, allow_blank: false
-            optional :password_confirmation, type: String, allow_blank: false
-            requires :current_password, type: String, allow_blank: false
+            requires :username, type: String, allow_blank: {value: false, message: "username:Der Accountname darf nicht nur aus Leerzeichen bestehen."}, message: "username:Der Accountname fehlt."
+            optional :email, type: String, regexp: {value: /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i, message: "email:Ungültiges Email-Format"}
+            optional :ort, type: String, allow_blank: {value: false, message: "ort:Der Ort darf nicht nur aus Leerzeichen bestehen."}
+            optional :plz, type: String, allow_blank: {value: false, message: "plz:Die Postleitzahl darf nicht nur aus Leerzeichen bestehen."}
+            optional :web, type: String, allow_blank: {value: false, message: "web:Die Internetaddresse darf nicht nur aus Leerzeichen bestehen."}
+            optional :fon, type: String, allow_blank: {value: false, message: "fon:Die Telefonnummer darf nicht nur aus Leerzeichen bestehen."}
+            optional :password, type: String, allow_blank: {value: false, message: "password:Das neue Passwort darf nicht nur aus Leerzeichen bestehen."}
+            given :password do
+              requires :password_confirmation, type: String, allow_blank: {value: false, message: "password_confirmation:Die Passwort-Bestätigung darf nicht nur aus Leerzeichen bestehen."}, message: "password_confirmation:Das neue Passwort muss bestätigt werden."
+            end
+            requires :current_password, type: String, message: "current_password:Das Passwort fehlt."
             optional :news, type: Boolean
           end
         end
