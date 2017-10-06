@@ -15,7 +15,7 @@ module API
           error!(response, 409)
         else
           c = Company.new(params[:data])
-          c.validated = false
+          c.validated = true
           if c.save
             status 200
             {status: 200, data: c}
