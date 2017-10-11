@@ -17,15 +17,29 @@ module API
         # If so, throw an error message back.
         if User.find_by(username: params[:data][:username])
           response = {
-            status: 409,
-            error: 'username_exists'
+            description: 'Der angegebene Benutzername existiert bereits.',
+            error: {
+              name: 'username_exists',
+              state: 'conflict'
+              },
+            reason: 'unknown',
+            redirect_uri: nil,
+            response_on_fragment: nil,
+            status: 409
           }
           error!(response, 409)
         else
           if User.find_by(email: params[:data][:email])
           response = {
-            status: 409,
-            error: 'email_exists'
+            description: 'Die angegebene Email existiert bereits.',
+            error: {
+              name: 'email_exists',
+              state: 'conflict'
+              },
+            reason: 'unknown',
+            redirect_uri: nil,
+            response_on_fragment: nil,
+            status: 409
           }
           error!(response, 409)          
           else 
