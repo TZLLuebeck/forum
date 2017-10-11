@@ -52,8 +52,9 @@ module API
             optional :company, type: Hash do
               requires :name, type: String, allow_blank: {value: false, message: "companyname:Der Firmenname darf nicht nur aus Leerzeichen bestehen."}, message: "companyname:Der Firmenname fehlt."
               requires :description, allow_blank: {value: false, message: "companydescription:Die Kurzbeschreibung darf nicht nur aus Leerzeichen bestehen."}, message: "companydescription:Die Kurzbeschreibung fehlt."
+              requires :website, type: String, message: "website:Die Webseite der Firma fehlt."
               requires :typus, type: String, values: {value: ["Klinik", "Institut", "Firma"], message: "Ungültiger Firmentyp"}, message: "companytypus:missing"
-              optional :parent, type: String, allow_blank: {value: false, message: "parent:Die Zugehörigkeit darf nicht nur aus Leerzeichen bestehen."}
+              optional :parent, type: String
               optional :logo, type: Rack::Multipart::UploadedFile
             end            
           end

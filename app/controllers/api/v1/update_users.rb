@@ -42,8 +42,9 @@ module API
               # Create the comapny with the given values.
               # Otherwise the User has just selected an existing company and is attached to it.
               if !par.has_key?(:company_id)
-                c = Company.create(params[:data][:company])
-                if !c
+                c = Company.new(params[:data][:company])
+                c.validated = true
+                if !c.save
                   response = {
                     description: 'Die Firma konnte nicht erstellt werden.',
                     error: {

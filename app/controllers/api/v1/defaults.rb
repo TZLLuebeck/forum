@@ -9,7 +9,7 @@ module API
 
         helpers do
           def current_token
-            Doorkeeper::AccessToken.find_by! token: bearer_token
+            Doorkeeper::AccessToken.find_by token: bearer_token
           end
 
           def bearer_token

@@ -83,6 +83,10 @@ module API
           element.serializable_hash.merge(keywords: element.tag_list)
         end
         if res
+          res.each do |int|
+            int.delete :description
+            int.delete :user_id
+          end
           status 200
           {status: 200, data: res}
         else
@@ -152,6 +156,41 @@ module API
             error: 500,
             message: 'could_not_read_keywords'
           }
+        end
+      end
+
+      def get_semi_random_interest()
+        res = nil
+        if u = current_resource_owner
+          r = u.roles
+          res = Interest.where(target: r).where.not(user_id: u.id).order("RAND()").limit(2)
+        else
+          res = Interest.order("RAND()").limit(2)
+        end
+        if res
+          res.map do |int|
+            #int.delete :description
+            #int.delete :user_id
+            int.serializable_hash.merge(keywords: int.tag_list)
+          end
+          status 200
+          response = {
+            status: 200,
+            data: res
+          }
+        else
+          response = {
+            description: 'Es wurden keine Einträge gefunden.',
+            error: {
+              name: 'interests_not_found',
+              state: 'not_found'
+              },
+            reason: 'unknown',
+            redirect_uri: nil,
+            response_on_fragment: nil,
+            status: 404
+          }
+          error!(response, 404)
         end
       end
 

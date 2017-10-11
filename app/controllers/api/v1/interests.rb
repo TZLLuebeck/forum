@@ -75,6 +75,11 @@ module API
           get_most_keywords()
         end
 
+        desc 'Return 2 semi-random interests'
+        get '/target' do
+          get_semi_random_interest()
+        end
+
         desc 'Return one interest'
         oauth2
         params do
